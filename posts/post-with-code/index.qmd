@@ -2,20 +2,33 @@
 title: "Gotta Catch 'Em All (2/6)"
 author: "Phoebe Jones"
 date: "2026-02-02"
-categories: [news, code, analysis]
+categories: 
 image: "image.jpg"
 ---
 
 Reading in data regarding pokemon.
 
 ```{r}
-pokemon_df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
+pokemon <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
 ```
 
 ```{r}
 library(tidyverse)
 library(ggplot2)
 
-ggplot(pokemon_df, aes(x = type_1)) +
-  geom_bar()
+# data where a pokemon appears for each type it is
+pokemon_long <- pokemon |> pivot_longer(
+  cols = starts_with("type_"),
+  values_to = "type",
+  values_drop_na = TRUE
+)
+
+ggplot(pokemon_long, aes(x = generation_id)) +
+  geom_bar(aes(fill = type))
+
+ggplot(pokemon_long, aes(x = color_1)) +
+  geom_bar() +
+  facet_wrap(~ type)
+
+
 ```
