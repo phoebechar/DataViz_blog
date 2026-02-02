@@ -1,5 +1,5 @@
 ---
-title: "Blog Post 1"
+title: "Gotta Catch 'Em All (2/6)"
 author: "Phoebe Jones"
 date: "2026-02-02"
 categories: [news, code, analysis]
