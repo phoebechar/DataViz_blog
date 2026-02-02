@@ -1,13 +1,21 @@
 ---
-title: "Post With Code"
-author: "Harlow Malloc"
-date: "2026-01-28"
+title: "Blog Post 1"
+author: "Phoebe Jones"
+date: "2026-02-02"
 categories: [news, code, analysis]
 image: "image.jpg"
 ---
 
-This is a post with executable code.
+Reading in data regarding pokemon.
 
 ```{r}
-1 + 1
+pokemon_df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
+```
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+
+ggplot(pokemon_df, aes(x = type_1)) +
+  geom_bar()
 ```
