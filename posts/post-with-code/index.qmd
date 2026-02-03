@@ -3,10 +3,10 @@ title: "Gotta Catch 'Em All (2/6)"
 author: "Phoebe Jones"
 date: "2026-02-02"
 categories: 
-image: "image.jpg"
+image: "pokemonbig.webp"
 ---
 
-Reading in data regarding pokemon.
+Reading in data regarding Pokemon.
 
 ```{r}
 pokemon <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
@@ -16,19 +16,42 @@ pokemon <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/ti
 library(tidyverse)
 library(ggplot2)
 
+ggplot(pokemon, aes(x = weight, y = defense)) +
+  geom_point()
+
 # data where a pokemon appears for each type it is
 pokemon_long <- pokemon |> pivot_longer(
+  names_to = NULL,
   cols = starts_with("type_"),
   values_to = "type",
   values_drop_na = TRUE
 )
 
-ggplot(pokemon_long, aes(x = generation_id)) +
-  geom_bar(aes(fill = type))
+pokemon_long <- pokemon_long |> pivot_longer(
+  names_to = NULL,
+  cols = starts_with("egg_group_"),
+  values_to = "egg_group",
+  values_drop_na = TRUE
+)
 
-ggplot(pokemon_long, aes(x = color_1)) +
-  geom_bar() +
-  facet_wrap(~ type)
+pokemon_type <- pokemon_long |> group_by(type, egg_group) |> summarise(n_pokemon = n())
+
+pokemon_type <- pokemon_type |> unite("type_egg", type:egg_group)
+
+pokemon_type <- pokemon_type |> arrange(desc(n_pokemon)) |> slice(1:10) |> mutate(type_egg = fct_reorder(type_egg, n_pokemon))
 
 
+ggplot(pokemon_type, aes(x = type_egg, y = n_pokemon)) +
+  geom_bar(stat = "identity")
+
+```
+
+```{r}
+pokemon_plot <- pokemon_long |> group_by(type) |> mutate(median = median(defense)) |> ungroup() |> mutate(type = fct_reorder(type, median))
+
+ggplot(pokemon_plot, aes(x = type, y = defense)) +
+  geom_boxplot(fill = "pink", color = "hotpink3") + 
+  theme_linedraw()
+
+bug <- pokemon_long |> filter(type == "bug")
 ```
