@@ -16,18 +16,9 @@ library(ggplot2)
 
 pokemon <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
 
-# reading in a list of legendary pokemon's names
-legendary <- read_csv("legendary.csv")
-
-# formatting it to match the existing data
-legendary <- legendary |> mutate(pokemon = str_to_lower(pokemon))
-
-# making a data fram of just legendary pokemon and stats
-legendary <- left_join(legendary, pokemon)
 ```
 
 ```{r}
-
 # data where a pokemon appears once for each type it is
 pokemon_long <- pokemon |> pivot_longer(
   names_to = NULL,
@@ -35,47 +26,9 @@ pokemon_long <- pokemon |> pivot_longer(
   values_to = "type",
   values_drop_na = TRUE
 )
-
 ```
 
 ```{r}
-
-# order the pokemon by median defense
-pokemon_plot <- pokemon_long |> group_by(type) |> mutate(median = median(defense)) |> ungroup() |> mutate(type = fct_reorder(type, median))
-
-ggplot(pokemon_plot, aes(x = type, y = defense)) +
-  geom_boxplot(fill = "pink", color = "hotpink3") + 
-  theme_linedraw()
-```
-
-```{r}
-ggplot(pokemon, aes(x = weight, y = height)) +
-  geom_point() +
-  geom_point(data = legendary, color = "hotpink")
-
-```
-
-```{r}
-pokemon <- pokemon |> mutate(legendary = if_else(pokemon %in% legendary$pokemon, "Yes", "No"))
-```
-
-```{r}
-ggplot(pokemon_leg, aes(x = legendary, y = special_attack)) +
-  geom_boxplot() +
-  theme_linedraw()
-```
-
-```{r}
-ggplot(pokemon_leg, aes(x = legendary, y = hp)) +
-  geom_boxplot() +
-  theme_linedraw()
-```
-
-```{r}
-pokemon_type <- pokemon_long |> group_by(type) |> summarise(n_pokemon = n()) |> arrange(desc(n_pokemon)) |> slice(1:10)
-
-pokemon_topten <- pokemon_long |> filter(type %in% pokemon_type$type)
-
 pokemon_bliss <- pokemon |> filter(pokemon == "blissey")
 
 ggplot(pokemon, aes(x = attack, y = defense)) +
@@ -83,24 +36,4 @@ ggplot(pokemon, aes(x = attack, y = defense)) +
   geom_point(data = pokemon_bliss, shape = 1, size = 5) +
   theme_linedraw() +
   scale_colour_viridis_c(option = "mako", direction = -1)
-```
-
-```{r}
-pokemon_long2 <- pokemon_long |> mutate(level = 
-                                          case_when(base_experience < 100 ~ "1",
-                                                    base_experience < 200 ~ "2",
-                                                    .default = "3"
-))
-```
-
-```{r}
-pokemon_complex <- pokemon_long2 |> group_by(id) |> mutate(n_type = as.factor(n())) |> slice(1) |> ungroup()
-
-ggplot(pokemon_complex, aes(x = n_type)) +
-         geom_bar() +
-         facet_grid(~ level)
-```
-
-```{r}
-
 ```
