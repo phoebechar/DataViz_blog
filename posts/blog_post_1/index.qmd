@@ -8,19 +8,24 @@ image: "blisseyblog.jpg"
 
 ## Introduction
 
-For this post, I worked with a data set of 949 Pokemon, accessed from TidyTuesday \_\_\_\_\_.
-
-I began with a simple question in mind: which Pokemon should be my new favorite? During my initial exploration of the data I made the following graph: one that shows the relationship between a Pokemon's attack stat and defense stat while showing the experience yielded from defeating this Pokemon in battle. At first,
+For this post, I worked with a data set of 949 Pokémon, accessed from the TidyTuesday GitHub repository: <https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv>. The data set contains 22 variables; the variables relevant to this post are `pokemon`, `attack`, `defense`, `base_experience`, and `hp`. `pokemon` is the Pokemon's name (like Pikachu or Bulbasaur), `attack` is the Pokémon's attack stat (which helps determine how much damage it's attacks do), `defense` is the Pokémon's defense stat (which helps determine how much damage opposing attacks deal), `base_experience` is the amount of experience the Pokémon yields upon being defeated in battle, and `hp` is the amount of health that the Pokémon has.
 
 ```{r}
+#| output: FALSE
 library(readr)
 library(tidyverse)
-library(stringr)
 library(ggplot2)
+library(ggrepel)
 
 pokemon <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
 
 ```
+
+In exploring this data, I was more interested in specific Pokémon's idiosyncracies rather than overall trends. I began with a simple question in mind: which Pokémon should be my new favorite?
+
+## Finding Blissey
+
+During my initial exploration of the data I made the following plot: one that shows the relationship between a Pokémon's attack and defense stats while also showing their base experience. (Remember: base experience is the amount of experience yielded from a Pokémon's defeat in battle).
 
 ```{r}
 ggplot(pokemon, aes(x = attack, y = defense)) +
@@ -32,13 +37,16 @@ ggplot(pokemon, aes(x = attack, y = defense)) +
     text = element_text(family = "serif"),
     legend.title = element_text(size = rel(0.75)),
     legend.text = element_text(size = rel(0.75))) +
-  labs(title = "Placeholder",
+  labs(title = "Defense vs. Attack by Base Experience",
        x = "Attack Stat", 
        y = "Defense Stat", 
-       colour = "Experience Yielded")
+       colour = "Base Experience")
 ```
 
+At first, nothing looked out of the ordinary; attack and defense had a positive relationship and as they both increased, so did the experience yielded. This makes sense because as the game progresses, the Pokémon get stronger (their stats increase), which means the player is rewarded more significantly for defeating them (their base experience increases). Then I noticed something odd:
+
 ```{r}
+#| echo: FALSE
 pokemon_bliss <- pokemon |> filter(pokemon == "blissey")
 
 ggplot(pokemon, aes(x = attack, y = defense)) +
@@ -51,8 +59,41 @@ ggplot(pokemon, aes(x = attack, y = defense)) +
     text = element_text(family = "serif"),
     legend.title = element_text(size = rel(0.75)),
     legend.text = element_text(size = rel(0.75))) +
-  labs(title = "Placeholder",
+  labs(title = "Defense vs. Attack by Base Experience",
        x = "Attack Stat", 
        y = "Defense Stat", 
        colour = "Experience Yielded")
 ```
+
+A very dark dot (circled above) indicating a Pokémon with very high base experience close to the minimum values for defense and attack. This was very intriguing to me, as it is odd that a Pokémon that does not deal significant damage or lower received damage would be considered such a difficult opponent to net so much experience.
+
+Upon further investigation, I found that this Pokémon is Blissey, a normal type Pokémon introduced in the second generation of the Pokémon games that is always female.
+
+```{r}
+pokemon_bliss
+```
+
+What makes Blissey interesting is her `hp`.
+
+```{r}
+ggplot(pokemon, aes(y = hp)) +
+  geom_boxplot() +
+  theme_linedraw() +
+  labs(y = "Health") +
+  geom_point(data = pokemon_bliss, aes(x = 0), color = "hotpink") +
+  theme(
+    panel.background = element_rect(fill = "grey80"),
+    text = element_text(family = "serif"),
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank())
+```
+
+The above plot shows that Blissey (marked in pink) has the highest health of any Pokémon in the data set. Her close second is her pre-evolved form, Chansey, and all other close competitors are acheived in the late game and are generally more well-rounded than Blissey. Blissey is the unique "tank" Pokémon in the franchise, meaning that her primary purpose to take hits and survive, not to deal damage.
+
+## Conclusion
+
+It is important to note that this data set only contains Pokémon from Generations 1 through 7. This means that the most recent games and their Pokémon are not represented. It is possible that Blissey has been dethroned in the newest Generations. With more time and more complex data, I would have liked to analyze Blissey's move set, especially in the context of knowing her as a tank Pokémon.
+
+## Class Connections
+
+I feel my visualizations are good ways of communicating information because I used color to add information to the plots and emphasize the important observations. I will note that my boxplot is quite squished, but because I was focusing on an outlier rather than the spread, I feel it is reasonable.
