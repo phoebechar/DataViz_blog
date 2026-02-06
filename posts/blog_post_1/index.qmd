@@ -70,7 +70,8 @@ A very dark dot (circled above) indicating a Pokémon with very high base experi
 Upon further investigation, I found that this Pokémon is Blissey, a normal type Pokémon introduced in the second generation of the Pokémon games that is always female.
 
 ```{r}
-pokemon_bliss
+#| output: FALSE
+pokemon_bliss |> select(c("id", "pokemon", "base_experience", "type_1", "hp", "attack", "defense", "generation_id")) |> knitr::kable()
 ```
 
 What makes Blissey interesting is her `hp`.
