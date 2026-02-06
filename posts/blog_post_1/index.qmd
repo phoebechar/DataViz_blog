@@ -1,0 +1,58 @@
+---
+title: "Blissey's Biggest Fan"
+author: "Phoebe Jones"
+date: "2026-02-06"
+categories: 
+image: "blisseyblog.jpg"
+---
+
+## Introduction
+
+For this post, I worked with a data set of 949 Pokemon, accessed from TidyTuesday \_\_\_\_\_.
+
+I began with a simple question in mind: which Pokemon should be my new favorite? During my initial exploration of the data I made the following graph: one that shows the relationship between a Pokemon's attack stat and defense stat while showing the experience yielded from defeating this Pokemon in battle. At first,
+
+```{r}
+library(readr)
+library(tidyverse)
+library(stringr)
+library(ggplot2)
+
+pokemon <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv')
+
+```
+
+```{r}
+ggplot(pokemon, aes(x = attack, y = defense)) +
+  geom_point(aes(colour = base_experience)) +
+  theme_linedraw() +
+  scale_colour_viridis_c(option = "mako", direction = -1) +
+  theme(
+    panel.background = element_rect(fill = "grey80"),
+    text = element_text(family = "serif"),
+    legend.title = element_text(size = rel(0.75)),
+    legend.text = element_text(size = rel(0.75))) +
+  labs(title = "Placeholder",
+       x = "Attack Stat", 
+       y = "Defense Stat", 
+       colour = "Experience Yielded")
+```
+
+```{r}
+pokemon_bliss <- pokemon |> filter(pokemon == "blissey")
+
+ggplot(pokemon, aes(x = attack, y = defense)) +
+  geom_point(aes(colour = base_experience)) +
+  geom_point(data = pokemon_bliss, shape = 1, size = 5) +
+  theme_linedraw() +
+  scale_colour_viridis_c(option = "mako", direction = -1) +
+  theme(
+    panel.background = element_rect(fill = "grey80"),
+    text = element_text(family = "serif"),
+    legend.title = element_text(size = rel(0.75)),
+    legend.text = element_text(size = rel(0.75))) +
+  labs(title = "Placeholder",
+       x = "Attack Stat", 
+       y = "Defense Stat", 
+       colour = "Experience Yielded")
+```
