@@ -186,10 +186,6 @@ background-color: null;
 font-style: inherit;">180</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">180</span>))</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 164 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -200,7 +196,7 @@ font-style: inherit;">180</span>))</span></code></pre></div></div>
 </div>
 <p>For my purposes, the most important thing I can see on this map is the notable density of dots in Africa. To double-check my judgement based on the map, seeing as the dots are very crowded, I created the following graph, showing the number of languages in each <code>macroarea</code> present in the dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">languages_plot <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">languages_plot <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> languages <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -209,7 +205,7 @@ background-color: null;
 font-style: inherit;">group_by</span>(macroarea) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> </span>
-<span id="cb4-2">  <span class="fu" style="color: #4758AB;
+<span id="cb3-2">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">summarise</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -218,15 +214,15 @@ background-color: null;
 font-style: inherit;">n</span>()) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb4-3">  <span class="fu" style="color: #4758AB;
+<span id="cb3-3">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">macroarea =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">fct_reorder</span>(macroarea, n_languages))</span>
-<span id="cb4-4"></span>
-<span id="cb4-5"><span class="fu" style="color: #4758AB;
+<span id="cb3-4"></span>
+<span id="cb3-5"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>(languages_plot, <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -237,7 +233,7 @@ background-color: null;
 font-style: inherit;">y =</span> n_languages)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb4-6">  <span class="fu" style="color: #4758AB;
+<span id="cb3-6">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_bar</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -250,24 +246,24 @@ background-color: null;
 font-style: inherit;">"deeppink2"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb4-7">  <span class="fu" style="color: #4758AB;
+<span id="cb3-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">coord_flip</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb4-8">  <span class="fu" style="color: #4758AB;
+<span id="cb3-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Number of Languages"</span>,</span>
-<span id="cb4-9">       <span class="at" style="color: #657422;
+<span id="cb3-9">       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Macroaarea"</span>,</span>
-<span id="cb4-10">       <span class="at" style="color: #657422;
+<span id="cb3-10">       <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -285,7 +281,7 @@ font-style: inherit;">"Languages in Each Macroarea"</span>)</span></code></pre><
 <h2 class="anchored" data-anchor-id="africa-not-by-toto">Africa (not by Toto)</h2>
 <p>This plot confirmed my earlier judgement from the map, that Africa has the most language diversity within this dataset. This motivated me to continue my investigation of Africa and it’s languages, so I narrowed in my initial map on Africa, this time coloring by language family (with the top ten most common families in Africa being separate and all others falling into the “other” category).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">africa <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">africa <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> world_map <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -316,8 +312,8 @@ background-color: null;
 font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">51</span>)</span>
-<span id="cb5-2"></span>
-<span id="cb5-3">languages_africa <span class="ot" style="color: #003B4F;
+<span id="cb4-2"></span>
+<span id="cb4-3">languages_africa <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> languages <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -328,8 +324,8 @@ background-color: null;
 font-style: inherit;">==</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Africa"</span>)</span>
-<span id="cb5-4"></span>
-<span id="cb5-5">languages_africa <span class="ot" style="color: #003B4F;
+<span id="cb4-4"></span>
+<span id="cb4-5">languages_africa <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -338,8 +334,8 @@ background-color: null;
 font-style: inherit;">join_by</span>(family_id <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> id))</span>
-<span id="cb5-6"></span>
-<span id="cb5-7">africa_topten <span class="ot" style="color: #003B4F;
+<span id="cb4-6"></span>
+<span id="cb4-7">africa_topten <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> languages_africa <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -370,8 +366,8 @@ background-color: null;
 font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>)</span>
-<span id="cb5-8"></span>
-<span id="cb5-9">languages_africa <span class="ot" style="color: #003B4F;
+<span id="cb4-8"></span>
+<span id="cb4-9">languages_africa <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> languages_africa <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -380,7 +376,7 @@ background-color: null;
 font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">new_family =</span> </span>
-<span id="cb5-10">                                                 <span class="fu" style="color: #4758AB;
+<span id="cb4-10">                                                 <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">if_else</span>((family_id <span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -389,18 +385,18 @@ background-color: null;
 font-style: inherit;">$</span>family_id), family, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"other"</span>)) </span>
-<span id="cb5-11"></span>
-<span id="cb5-12"><span class="fu" style="color: #4758AB;
+<span id="cb4-11"></span>
+<span id="cb4-12"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-13">  <span class="fu" style="color: #4758AB;
+<span id="cb4-13">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_polygon</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">data =</span> africa,</span>
-<span id="cb5-14">            <span class="at" style="color: #657422;
+<span id="cb4-14">            <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">mapping =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -409,7 +405,7 @@ background-color: null;
 font-style: inherit;">x =</span> long, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">y =</span> lat,</span>
-<span id="cb5-15">                          <span class="at" style="color: #657422;
+<span id="cb4-15">                          <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group =</span> group), <span class="at" style="color: #657422;
 background-color: null;
@@ -422,12 +418,12 @@ background-color: null;
 font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-16">  <span class="fu" style="color: #4758AB;
+<span id="cb4-16">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-17">  <span class="fu" style="color: #4758AB;
+<span id="cb4-17">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -446,14 +442,14 @@ background-color: null;
 font-style: inherit;">75</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-18">  <span class="fu" style="color: #4758AB;
+<span id="cb4-18">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">coord_map</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"mercator"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-19">  <span class="fu" style="color: #4758AB;
+<span id="cb4-19">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">xlim</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -466,7 +462,7 @@ background-color: null;
 font-style: inherit;">52</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-20">  <span class="fu" style="color: #4758AB;
+<span id="cb4-20">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ylim</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -479,7 +475,7 @@ background-color: null;
 font-style: inherit;">40</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb5-21">  <span class="fu" style="color: #4758AB;
+<span id="cb4-21">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -490,10 +486,6 @@ background-color: null;
 font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Language Families in Africa"</span>)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 35 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -505,7 +497,7 @@ font-style: inherit;">"Language Families in Africa"</span>)</span></code></pre><
 <p>This map provides some interesting insights. Firstly, we can see that the most dominant language family is, by far, the Atlantic-Congo family. We can also see that, for the most part, languages from the same families are clustered together. Finally, notice that the most common family in the Northern part of the continent is Afro-Asiatic, which makes sense based on its proximity to Asia.</p>
 <p>I have heard of quite a few African languages, but nowhere near this number, so, naturally my next motivation was to investigate the “status” of these languages. Are they mostly endangered or even extinct? The following map uses the same strategy as above but colors for status rather than families.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">languages_africa2 <span class="ot" style="color: #003B4F;
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">languages_africa2 <span class="ot" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -514,18 +506,18 @@ background-color: null;
 font-style: inherit;">join_by</span>(id <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> id))</span>
-<span id="cb7-2"></span>
-<span id="cb7-3"><span class="fu" style="color: #4758AB;
+<span id="cb5-2"></span>
+<span id="cb5-3"><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-4">  <span class="fu" style="color: #4758AB;
+<span id="cb5-4">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_polygon</span>(<span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">data =</span> africa,</span>
-<span id="cb7-5">            <span class="at" style="color: #657422;
+<span id="cb5-5">            <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">mapping =</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -534,7 +526,7 @@ background-color: null;
 font-style: inherit;">x =</span> long, <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">y =</span> lat,</span>
-<span id="cb7-6">                          <span class="at" style="color: #657422;
+<span id="cb5-6">                          <span class="at" style="color: #657422;
 background-color: null;
 font-style: inherit;">group =</span> group), <span class="at" style="color: #657422;
 background-color: null;
@@ -547,12 +539,12 @@ background-color: null;
 font-style: inherit;">"black"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-7">  <span class="fu" style="color: #4758AB;
+<span id="cb5-7">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-8">  <span class="fu" style="color: #4758AB;
+<span id="cb5-8">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -571,14 +563,14 @@ background-color: null;
 font-style: inherit;">75</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-9">  <span class="fu" style="color: #4758AB;
+<span id="cb5-9">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">coord_map</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"mercator"</span>) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-10">  <span class="fu" style="color: #4758AB;
+<span id="cb5-10">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">xlim</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -591,7 +583,7 @@ background-color: null;
 font-style: inherit;">52</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-11">  <span class="fu" style="color: #4758AB;
+<span id="cb5-11">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">ylim</span>(<span class="fu" style="color: #4758AB;
 background-color: null;
@@ -604,7 +596,7 @@ background-color: null;
 font-style: inherit;">40</span>)) <span class="sc" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb7-12">  <span class="fu" style="color: #4758AB;
+<span id="cb5-12">  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
 background-color: null;
@@ -615,10 +607,6 @@ background-color: null;
 font-style: inherit;">title =</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Statuses of Languages in Africa"</span>)</span></code></pre></div></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 35 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

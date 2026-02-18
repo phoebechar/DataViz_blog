@@ -36,6 +36,7 @@ In exploring the data, I was interested in linguistic richness around the world,
 To begin exploring this question, I looked at a map of the world, with languages added to the map as points.
 
 ```{r}
+#| warning: FALSE
 world_map <- map_data("world")
 
 ggplot() +
@@ -51,6 +52,7 @@ ggplot() +
 For my purposes, the most important thing I can see on this map is the notable density of dots in Africa. To double-check my judgement based on the map, seeing as the dots are very crowded, I created the following graph, showing the number of languages in each `macroarea` present in the dataset.
 
 ```{r}
+#| warning: FALSE
 languages_plot <- languages |> group_by(macroarea) |> 
   summarise(n_languages = n()) |>
   mutate(macroarea = fct_reorder(macroarea, n_languages))
@@ -68,6 +70,7 @@ ggplot(languages_plot, aes(x = macroarea, y = n_languages)) +
 This plot confirmed my earlier judgement from the map, that Africa has the most language diversity within this dataset. This motivated me to continue my investigation of Africa and it's languages, so I narrowed in my initial map on Africa, this time coloring by language family (with the top ten most common families in Africa being separate and all others falling into the "other" category).
 
 ```{r}
+#| warning: FALSE
 africa <- world_map |> filter(lat < 38 & lat > -34, long > -18 & long < 51)
 
 languages_africa <- languages |> filter(macroarea == "Africa")
@@ -96,6 +99,7 @@ This map provides some interesting insights. Firstly, we can see that the most d
 I have heard of quite a few African languages, but nowhere near this number, so, naturally my next motivation was to investigate the "status" of these languages. Are they mostly endangered or even extinct? The following map uses the same strategy as above but colors for status rather than families.
 
 ```{r}
+#| warning: FALSE
 languages_africa2 <- left_join(languages_africa, endangered_status, join_by(id == id))
 
 ggplot() +
