@@ -9,7 +9,7 @@
 <meta name="author" content="Phoebe Jones">
 <meta name="dcterms.date" content="2026-02-06">
 
-<title>Blissey’s Biggest Fan – DataViz_blog</title>
+<title>Language in Africa – DataViz_blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -154,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Blissey’s Biggest Fan</h1>
+      <h1 class="title">Language in Africa</h1>
                       </div>
   </div>
     
@@ -192,34 +192,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>For this post, I worked with a data set of 949 Pokémon, accessed from the TidyTuesday GitHub repository: <a href="https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv" class="uri">https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv</a>. The data set contains 22 variables; the variables relevant to this post are <code>pokemon</code>, <code>attack</code>, <code>defense</code>, <code>base_experience</code>, and <code>hp</code>. <code>pokemon</code> is the Pokemon’s name (like Pikachu or Bulbasaur), <code>attack</code> is the Pokémon’s attack stat (which helps determine how much damage it’s attacks do), <code>defense</code> is the Pokémon’s defense stat (which helps determine how much damage opposing attacks deal), <code>base_experience</code> is the amount of experience the Pokémon yields upon being defeated in battle, and <code>hp</code> is the amount of health that the Pokémon has.</p>
+<p>For this post, I worked with 3 data sets of connected language data from around the globe, accessed from the Tidy Tuesday github repository. <a href="https://github.com/rfordatascience/tidytuesday/blob/9bcf450066916252422fd6add6ab184a61e62b69/data/2025/2025-12-23/readme.md" class="uri">https://github.com/rfordatascience/tidytuesday/blob/9bcf450066916252422fd6add6ab184a61e62b69/data/2025/2025-12-23/readme.md</a>. The main dataset contains 8612 distinct languages and 9 variables. For this blog post, the important variables are <code>id</code>, <code>macroarea</code>, <code>latitude</code>, <code>longitude</code>, and <code>family_id</code>. <code>id</code> is a unique identifier given to each language, related to the language’s name. <code>macroarea</code> is the general geographic area where the language is found. <code>latitude</code> and <code>longitude</code> are, logically, the latitude and longitude where the language is found (as a single point). <code>family_id</code> is the unique identifier given to each language’s family (if it has one).</p>
+<p>Importantly, my version of this data has one family filtered out: the bookkeeping family, as this is a group of mostly unrelated, inauthentic languages that are only present in this dataset for bookkeeping purposes and are therefore not helpful for analysis.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>pokemon <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>endangered_status <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-12-23/endangered_status.csv'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>families <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-12-23/families.csv'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-12-23/languages.csv'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> languages <span class="sc">|&gt;</span> <span class="fu">filter</span>(family_id <span class="sc">!=</span> <span class="st">"book1242"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>languages <span class="ot">&lt;-</span> languages <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">str_detect</span>(macroarea, <span class="st">";"</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_linedraw</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>In exploring this data, I was more interested in specific Pokémon’s idiosyncracies rather than overall trends. I began with a simple question in mind: which Pokémon should be my new favorite?</p>
+<p>In exploring the data, I was interested in linguistic richness around the world, as well as the patterns within separate language families. I wondered which continent had the most linguistic diversity (measured as total number of languages originating from there) and how different language families were spread across the continent.</p>
 </section>
-<section id="finding-blissey" class="level2">
-<h2 class="anchored" data-anchor-id="finding-blissey">Finding Blissey</h2>
-<p>During my initial exploration of the data I made the following plot: one that shows the relationship between a Pokémon’s attack and defense stats while also showing their base experience. (Remember: base experience is the amount of experience yielded from a Pokémon’s defeat in battle).</p>
+<section id="initial-investigation" class="level2">
+<h2 class="anchored" data-anchor-id="initial-investigation">Initial Investigation</h2>
+<p>To begin exploring this question, I looked at a map of the world, with languages added to the map as points.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pokemon, <span class="fu">aes</span>(<span class="at">x =</span> attack, <span class="at">y =</span> defense)) <span class="sc">+</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> base_experience)) <span class="sc">+</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_linedraw</span>() <span class="sc">+</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_viridis_c</span>(<span class="at">option =</span> <span class="st">"mako"</span>, <span class="at">direction =</span> <span class="sc">-</span><span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey80"</span>),</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"serif"</span>),</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="fu">rel</span>(<span class="fl">0.75</span>)),</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="fu">rel</span>(<span class="fl">0.75</span>))) <span class="sc">+</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Defense vs. Attack by Base Experience"</span>,</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Attack Stat"</span>, </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Defense Stat"</span>, </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">colour =</span> <span class="st">"Base Experience"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>world_map <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="st">"world"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> world_map,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">group =</span> group), <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> languages, <span class="fu">aes</span>(<span class="at">y =</span> latitude, <span class="at">x =</span> longitude), <span class="at">color =</span> <span class="st">"deeppink2"</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_map</span>(<span class="st">"mercator"</span>) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">180</span>, <span class="dv">180</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 164 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -228,8 +237,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>At first, nothing looked out of the ordinary; attack and defense had a positive relationship and as they both increased, so did the experience yielded. This makes sense because as the game progresses, the Pokémon get stronger (their stats increase), which means the player is rewarded more significantly for defeating them (their base experience increases). Then I noticed something odd:</p>
+<p>For my purposes, the most important thing I can see on this map is the notable density of dots in Africa. To double-check my judgement based on the map, seeing as the dots are very crowded, I created the following graph, showing the number of languages in each <code>macroarea</code> present in the dataset.</p>
 <div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>languages_plot <span class="ot">&lt;-</span> languages <span class="sc">|&gt;</span> <span class="fu">group_by</span>(macroarea) <span class="sc">|&gt;</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_languages =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">macroarea =</span> <span class="fu">fct_reorder</span>(macroarea, n_languages))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(languages_plot, <span class="fu">aes</span>(<span class="at">x =</span> macroarea, <span class="at">y =</span> n_languages)) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">fill =</span> <span class="st">"deeppink2"</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Number of Languages"</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Macroaarea"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Languages in Each Macroarea"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -238,61 +257,63 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>A very dark dot (circled above) indicating a Pokémon with very high base experience close to the minimum values for defense and attack. This was very intriguing to me, as it is odd that a Pokémon that does not deal significant damage or lower received damage would be considered such a difficult opponent to net so much experience.</p>
-<p>Upon further investigation, I found that this Pokémon is Blissey, a normal type Pokémon introduced in the second generation of the Pokémon games that is always female.</p>
+</section>
+<section id="africa-not-by-toto" class="level2">
+<h2 class="anchored" data-anchor-id="africa-not-by-toto">Africa (not by Toto)</h2>
+<p>This plot confirmed my earlier judgement from the map, that Africa has the most language diversity within this dataset. This motivated me to continue my investigation of Africa and it’s languages, so I narrowed in my initial map on Africa, this time coloring by language family (with the top ten most common families in Africa being separate and all others falling into the “other” category).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pokemon_bliss <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">"id"</span>, <span class="st">"pokemon"</span>, <span class="st">"base_experience"</span>, <span class="st">"type_1"</span>, <span class="st">"hp"</span>, <span class="st">"attack"</span>, <span class="st">"defense"</span>, <span class="st">"generation_id"</span>)) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>africa <span class="ot">&lt;-</span> world_map <span class="sc">|&gt;</span> <span class="fu">filter</span>(lat <span class="sc">&lt;</span> <span class="dv">38</span> <span class="sc">&amp;</span> lat <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">34</span>, long <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">18</span> <span class="sc">&amp;</span> long <span class="sc">&lt;</span> <span class="dv">51</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>languages_africa <span class="ot">&lt;-</span> languages <span class="sc">|&gt;</span> <span class="fu">filter</span>(macroarea <span class="sc">==</span> <span class="st">"Africa"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>languages_africa <span class="ot">&lt;-</span> <span class="fu">left_join</span>(languages_africa, families, <span class="fu">join_by</span>(family_id <span class="sc">==</span> id))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>africa_topten <span class="ot">&lt;-</span> languages_africa <span class="sc">|&gt;</span> <span class="fu">group_by</span>(family_id) <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">n_languages =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(n_languages)) <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>languages_africa <span class="ot">&lt;-</span> languages_africa <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">new_family =</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>                                                 <span class="fu">if_else</span>((family_id <span class="sc">%in%</span> africa_topten<span class="sc">$</span>family_id), family, <span class="st">"other"</span>)) </span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> africa,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">group =</span> group), <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> languages_africa, <span class="fu">aes</span>(<span class="at">y =</span> latitude, <span class="at">x =</span> longitude, <span class="at">color =</span> new_family), <span class="at">size =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_map</span>(<span class="st">"mercator"</span>) <span class="sc">+</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">52</span>)) <span class="sc">+</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">40</span>, <span class="dv">40</span>)) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Family"</span>, <span class="at">title =</span> <span class="st">"Language Families in Africa"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 35 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
 <div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 5%">
-<col style="width: 11%">
-<col style="width: 23%">
-<col style="width: 10%">
-<col style="width: 5%">
-<col style="width: 10%">
-<col style="width: 11%">
-<col style="width: 20%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">id</th>
-<th style="text-align: left;">pokemon</th>
-<th style="text-align: right;">base_experience</th>
-<th style="text-align: left;">type_1</th>
-<th style="text-align: right;">hp</th>
-<th style="text-align: right;">attack</th>
-<th style="text-align: right;">defense</th>
-<th style="text-align: right;">generation_id</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">242</td>
-<td style="text-align: left;">blissey</td>
-<td style="text-align: right;">608</td>
-<td style="text-align: left;">normal</td>
-<td style="text-align: right;">255</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">2</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<p>What makes Blissey interesting is her <code>hp</code>.</p>
+</div>
+<p>This map provides some interesting insights. Firstly, we can see that the most dominant language family is, by far, the Atlantic-Congo family. We can also see that, for the most part, languages from the same families are clustered together. Finally, notice that the most common family in the Northern part of the continent is Afro-Asiatic, which makes sense based on its proximity to Asia.</p>
+<p>I have heard of quite a few African languages, but nowhere near this number, so, naturally my next motivation was to investigate the “status” of these languages. Are they mostly endangered or even extinct? The following map uses the same strategy as above but colors for status rather than families.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pokemon, <span class="fu">aes</span>(<span class="at">y =</span> hp)) <span class="sc">+</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_linedraw</span>() <span class="sc">+</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Health"</span>) <span class="sc">+</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> pokemon_bliss, <span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>), <span class="at">color =</span> <span class="st">"hotpink"</span>) <span class="sc">+</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"grey80"</span>),</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">family =</span> <span class="st">"serif"</span>),</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>languages_africa2 <span class="ot">&lt;-</span> <span class="fu">left_join</span>(languages_africa, endangered_status, <span class="fu">join_by</span>(id <span class="sc">==</span> id))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="at">data =</span> africa,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                          <span class="at">group =</span> group), <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> languages_africa2, <span class="fu">aes</span>(<span class="at">y =</span> latitude, <span class="at">x =</span> longitude, <span class="at">color =</span> status_label), <span class="at">size =</span> .<span class="dv">75</span>) <span class="sc">+</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_map</span>(<span class="st">"mercator"</span>) <span class="sc">+</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">52</span>)) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">40</span>, <span class="dv">40</span>)) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">"Status"</span>, <span class="at">title =</span> <span class="st">"Statuses of Languages in Africa"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 35 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -301,15 +322,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The above plot shows that Blissey (marked in pink) has the highest health of any Pokémon in the data set. Her close second is her pre-evolved form, Chansey, and all other close competitors are acheived in the late game and are generally more well-rounded than Blissey. Blissey is the unique “tank” Pokémon in the franchise, meaning that her primary purpose to take hits and survive, not to deal damage.</p>
+<p>The above graph shows that the majority of the languages in Africa are not endangered! This was very surprising to me, especially given the second most common status among these languages is <code>threatened</code> rather than one of the statuses closer to extinct. I was also a bit surprised to see that, for the most part, languages in similar statuses are not clustered together, I wouldn’t have been surprised if colonization of Africa had caused many languages in some areas to go extinct, but there is little evidence of spatial patterns.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p>It is important to note that this data set only contains Pokémon from Generations 1 through 7. This means that the most recent games and their Pokémon are not represented. It is possible that Blissey has been dethroned in the newest Generations. With more time and more complex data, I would have liked to analyze Blissey’s move set, especially in the context of knowing her as a tank Pokémon.</p>
+<p>My exploration of languages around the world and specifically in Africa was very enlightening. It is interesting to me that the data shows such an obvious wealth of linguistic intrigue in Africa, but current research efforts and cultural exchanges are not, to my knowledge, prioritizing this area. I am sure that these many language communities hold fascinating phenomenon the linguists could learn from.</p>
+<p>One possible limitation of my data is the way in which I have distinguished “African” languages. I have relied on the <code>macroarea</code> variable in the dataset, which seems to be accurate, but I have also, for ease of exploration, excluded any languages from more than one macroarea. These languages would have been more difficult to plot on the map, and are less inline with my research question than Africa-unique languages. Given more time, I would’ve liked to use the <code>is_isolate</code> variable to explore languages without families.</p>
 </section>
-<section id="class-connections" class="level2">
-<h2 class="anchored" data-anchor-id="class-connections">Class Connections</h2>
-<p>I feel my visualizations are good ways of communicating information because I used color to add information to the plots and emphasize the important observations. I will note that my boxplot is quite squished, but because I was focusing on an outlier rather than the spread, I feel it is reasonable.</p>
+<section id="class-concepts" class="level2">
+<h2 class="anchored" data-anchor-id="class-concepts">Class Concepts</h2>
+<p>Using maps to explore spatial relationships between and among not only languages themselves but also their statuses was very useful. Putting points into context with other and with global geography was crucial to my analysis.</p>
+<p>I do think, given more time, I would’ve liked to edit some aspects of the graphs. Specifically, I would’ve liked to play around with <code>position()</code> arguments to make clusters of dots less overwhelming and I would’ve liked to work with in-depth factor arguments to make the legends of the maps more useful.</p>
 
 
 </section>
