@@ -1,7 +1,7 @@
 ---
 title: "Language in Africa"
 author: "Phoebe Jones"
-date: "2026-02-06"
+date: "2026-02-18"
 categories: 
 image: "africa.jpeg"
 ---

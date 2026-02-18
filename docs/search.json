@@ -42,13 +42,6 @@
     "text": "Class Connections\nI feel my visualizations are good ways of communicating information because I used color to add information to the plots and emphasize the important observations. I will note that my boxplot is quite squished, but because I was focusing on an outlier rather than the spread, I feel it is reasonable."
   },
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "DataViz_blog",
-    "section": "",
-    "text": "Language in Africa\n\n\n\n\n\n\n\n\nFeb 6, 2026\n\n\nPhoebe Jones\n\n\n\n\n\n\n\n\n\n\n\n\nBlissey’s Biggest Fan\n\n\n\n\n\n\n\n\nFeb 6, 2026\n\n\nPhoebe Jones\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "posts/blog_post_2/index.html",
     "href": "posts/blog_post_2/index.html",
     "title": "Language in Africa",
@@ -89,5 +82,12 @@
     "title": "Language in Africa",
     "section": "Class Concepts",
     "text": "Class Concepts\nUsing maps to explore spatial relationships between and among not only languages themselves but also their statuses was very useful. Putting points into context with other and with global geography was crucial to my analysis.\nI do think, given more time, I would’ve liked to edit some aspects of the graphs. Specifically, I would’ve liked to play around with position() arguments to make clusters of dots less overwhelming and I would’ve liked to work with in-depth factor arguments to make the legends of the maps more useful."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DataViz_blog",
+    "section": "",
+    "text": "Language in Africa\n\n\n\n\n\n\n\n\nFeb 18, 2026\n\n\nPhoebe Jones\n\n\n\n\n\n\n\n\n\n\n\n\nBlissey’s Biggest Fan\n\n\n\n\n\n\n\n\nFeb 6, 2026\n\n\nPhoebe Jones\n\n\n\n\n\nNo matching items"
   }
 ]

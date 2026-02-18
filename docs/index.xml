@@ -10,7 +10,7 @@
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>A blog built with Quarto</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Fri, 06 Feb 2026 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 18 Feb 2026 05:00:00 GMT</lastBuildDate>
 <item>
   <title>Language in Africa</title>
   <dc:creator>Phoebe Jones</dc:creator>
@@ -644,7 +644,7 @@ font-style: inherit;">"Statuses of Languages in Africa"</span>)</span></code></p
 
  ]]></description>
   <guid>https://your-website-url.example.com/posts/blog_post_2/</guid>
-  <pubDate>Fri, 06 Feb 2026 05:00:00 GMT</pubDate>
+  <pubDate>Wed, 18 Feb 2026 05:00:00 GMT</pubDate>
   <media:content url="https://your-website-url.example.com/posts/blog_post_2/africa.jpeg" medium="image" type="image/jpeg"/>
 </item>
 <item>
