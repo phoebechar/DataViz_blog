@@ -3,20 +3,20 @@ project:
   output-dir: docs
 
 website:
-  description: "A blog built with Quarto"
+  description: "Blog for DS334 - Spring 2026"
   site-url: https://your-website-url.example.com # you must change this appropriately for RSS feeds to work properly
-  title: "DataViz_blog"
+  title: "Data Visualization Blog"
   navbar:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/phoebechar
+      - icon: linkedin
+        href: https://www.linkedin.com/in/phoebe-jones-89528a375/
 format:
   html:
     theme:
-      - cosmo
+      - minty
       - brand
     css: styles.css
 
