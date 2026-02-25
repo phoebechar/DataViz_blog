@@ -8,7 +8,7 @@ image: "bliss.jpg"
 
 ## Introduction
 
-For this post, I worked with a data set of 949 Pokémon, accessed from the TidyTuesday GitHub repository: <https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv>. The data set contains 22 variables; the variables relevant to this post are `pokemon`, `attack`, `defense`, `base_experience`, and `hp`. `pokemon` is the Pokemon's name (like Pikachu or Bulbasaur), `attack` is the Pokémon's attack stat (which helps determine how much damage it's attacks do), `defense` is the Pokémon's defense stat (which helps determine how much damage opposing attacks deal), `base_experience` is the amount of experience the Pokémon yields upon being defeated in battle, and `hp` is the amount of health that the Pokémon has.
+For this post, I worked with a data set of 949 Pokémon, accessed from the TidyTuesday GitHub repository. <https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-04-01/pokemon_df.csv>. The data set contains 22 variables; the variables relevant to this post are `pokemon`, `attack`, `defense`, `base_experience`, and `hp`. `pokemon` is the Pokemon's name (like Pikachu or Bulbasaur), `attack` is the Pokémon's attack stat (which helps determine how much damage it's attacks do), `defense` is the Pokémon's defense stat (which helps determine how much damage opposing attacks deal), `base_experience` is the amount of experience the Pokémon yields upon being defeated in battle, and `hp` is the amount of health that the Pokémon has.
 
 ```{r}
 #| output: FALSE
