@@ -5,10 +5,10 @@
       xmlns:dc="http://purl.org/dc/elements/1.1/" 
       version="2.0">
 <channel>
-<title>DataViz_blog</title>
+<title>Data Visualization Blog</title>
 <link>https://your-website-url.example.com/</link>
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
-<description>A blog built with Quarto</description>
+<description>Blog for DS334 - Spring 2026</description>
 <generator>quarto-1.8.25</generator>
 <lastBuildDate>Wed, 18 Feb 2026 05:00:00 GMT</lastBuildDate>
 <item>
@@ -636,7 +636,7 @@ font-style: inherit;">"Statuses of Languages in Africa"</span>)</span></code></p
   <media:content url="https://your-website-url.example.com/posts/blog_post_2/africa.jpeg" medium="image" type="image/jpeg"/>
 </item>
 <item>
-  <title>Blissey’s Biggest Fan</title>
+  <title>Bissey’s Biggest Fan</title>
   <dc:creator>Phoebe Jones</dc:creator>
   <link>https://your-website-url.example.com/posts/blog_post_1/</link>
   <description><![CDATA[ 
@@ -974,7 +974,7 @@ font-style: inherit;">element_blank</span>())</span></code></pre></div></div>
  ]]></description>
   <guid>https://your-website-url.example.com/posts/blog_post_1/</guid>
   <pubDate>Fri, 06 Feb 2026 05:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/blog_post_1/blisseyblog.jpg" medium="image" type="image/jpeg"/>
+  <media:content url="https://your-website-url.example.com/posts/blog_post_1/bisseyblog.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
