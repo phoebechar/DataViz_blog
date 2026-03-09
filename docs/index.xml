@@ -10,7 +10,24 @@
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Blog for DS334 - Spring 2026</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Wed, 18 Feb 2026 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 11 Mar 2026 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>VIDEO GAMES</title>
+  <dc:creator>Phoebe Jones</dc:creator>
+  <link>https://your-website-url.example.com/posts/blog_post_3/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+
+
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/blog_post_3/</guid>
+  <pubDate>Wed, 11 Mar 2026 04:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Language in Africa</title>
   <dc:creator>Phoebe Jones</dc:creator>
@@ -638,7 +655,7 @@ font-style: inherit;">"Statuses of Languages in Africa"</span>)</span></code></p
 <item>
   <title>Bissey’s Biggest Fan</title>
   <dc:creator>Phoebe Jones</dc:creator>
-  <link>https://your-website-url.example.com/posts/blog_post_1/</link>
+  <link>https://your-website-url.example.com/posts/blog_post_1_fix/</link>
   <description><![CDATA[ 
 
 
@@ -786,7 +803,7 @@ font-style: inherit;">"Base Experience"</span>)</span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/blog_post_1/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/blog_post_1_fix/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -796,7 +813,7 @@ font-style: inherit;">"Base Experience"</span>)</span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/blog_post_1/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/blog_post_1_fix/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -953,7 +970,7 @@ font-style: inherit;">element_blank</span>())</span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://your-website-url.example.com/posts/blog_post_1/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="https://your-website-url.example.com/posts/blog_post_1_fix/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -972,9 +989,8 @@ font-style: inherit;">element_blank</span>())</span></code></pre></div></div>
 </section>
 
  ]]></description>
-  <guid>https://your-website-url.example.com/posts/blog_post_1/</guid>
+  <guid>https://your-website-url.example.com/posts/blog_post_1_fix/</guid>
   <pubDate>Fri, 06 Feb 2026 05:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/blog_post_1/bliss.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
