@@ -1,8 +1,8 @@
 ---
 title: "Bissey's Biggest Fan"
 author: "Phoebe Jones"
-date: "2026-02-06"
-categories: 
+date: "2026-02-6"
+image: "bliss.jpeg"
 ---
 
 ## Introduction

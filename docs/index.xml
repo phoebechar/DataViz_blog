@@ -991,6 +991,7 @@ font-style: inherit;">element_blank</span>())</span></code></pre></div></div>
  ]]></description>
   <guid>https://your-website-url.example.com/posts/blog_post_1_fix/</guid>
   <pubDate>Fri, 06 Feb 2026 05:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/blog_post_1_fix/bliss.jpeg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
