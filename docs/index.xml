@@ -653,7 +653,7 @@ font-style: inherit;">"Statuses of Languages in Africa"</span>)</span></code></p
   <media:content url="https://your-website-url.example.com/posts/blog_post_2/africa.jpeg" medium="image" type="image/jpeg"/>
 </item>
 <item>
-  <title>Bissey’s Biggest Fan</title>
+  <title>Blissey’s Biggest Fan</title>
   <dc:creator>Phoebe Jones</dc:creator>
   <link>https://your-website-url.example.com/posts/blog_post_1_fix/</link>
   <description><![CDATA[ 
@@ -991,7 +991,7 @@ font-style: inherit;">element_blank</span>())</span></code></pre></div></div>
  ]]></description>
   <guid>https://your-website-url.example.com/posts/blog_post_1_fix/</guid>
   <pubDate>Fri, 06 Feb 2026 05:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/blog_post_1_fix/bliss.jpeg" medium="image" type="image/jpeg"/>
+  <media:content url="https://your-website-url.example.com/posts/blog_post_1_fix/bliss.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>
