@@ -10,9 +10,9 @@
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Blog for DS334 - Spring 2026</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Wed, 11 Mar 2026 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Fri, 13 Mar 2026 04:00:00 GMT</lastBuildDate>
 <item>
-  <title>VIDEO GAMES</title>
+  <title>Dungeons! But mostly, Dragons!</title>
   <dc:creator>Phoebe Jones</dc:creator>
   <link>https://your-website-url.example.com/posts/blog_post_3/</link>
   <description><![CDATA[ 
@@ -21,12 +21,619 @@
 
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>For this post, I worked with a data set of 330 monsters from Dungeons and Dragons, accessed from the Tidy Tuesday github repository. <a href="https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-05-27/readme.md" class="uri">https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-05-27/readme.md</a>. The data set contains 33 variables; the variables relevant to this post are <code>name</code>, <code>cr</code>, <code>size</code>, <code>ac</code>, and <code>hp_number</code>. <code>name</code> is the monster’s name (like Awakened Tree or Purple Worm), <code>cr</code> is the monster’s challenge rating (how difficult it is to defeat in battle), <code>size</code> is the monster’s size (in relative categories), <code>ac</code> is the monster’s armor class (how difficult it is to hit), and <code>hp_number</code> is the the amount of health that the monster has.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(broom)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggeffects)</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_linedraw</span>())</span>
+<span id="cb1-5"></span>
+<span id="cb1-6">monsters <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> readr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read_csv</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-05-27/monsters.csv'</span>)</span>
+<span id="cb1-7">monsters <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> monsters <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">factor</span>(size))</span></code></pre></div></div>
+</div>
+<p>In exploring this data set, I was interested in looking at the relationships between monsters’ challenge ratings and their other stats.</p>
+</section>
+<section id="to-begin-my-adventure" class="level2">
+<h2 class="anchored" data-anchor-id="to-begin-my-adventure">To Begin My Adventure</h2>
+<p>I wanted to start my exploration simply, by looking at the distribution of challenge rating across the data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(monsters, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> cr)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_freqpoly</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Challenge Rating"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Count"</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/blog_post_3/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The above frequency plot shows what I would expect: that there are more monsters of lower challenge ratings and less of higher. This makes sense, as from an adventure standpoint, there would be more use for easier to fight monsters than for very difficult bosses.</p>
+<p>Challenge rating is provided to players within the game handbook, but it would be useful to have the ability to predict challenge rating given a monster’s stats, especially if one was interested in creating original monsters. This is where I took my exploration next, towards developing a model to predict challenge rating.</p>
+<p>I started with using a monster’s size and armor class (and an interaction term between the two) to predict challenge rating.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">cr_mod <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(cr <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> size <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> ac <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> size<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>ac, monsters)</span>
+<span id="cb4-2">cr_mod <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glance</span>()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.803         0.795  2.63      99.0 5.57e-103    13  -780. 1590. 1647.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>The above table shows this model has an adjusted r-squared of 0.795, meaning that the model explains 79.5% of the variation in challenge rating. That’s not bad! Let’s visualize.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1">pred_cr <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggpredict</span>(cr_mod, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">terms =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ac"</span>,</span>
+<span id="cb6-2">                                       <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"size"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">terms_to_colnames =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb6-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_tibble</span>()</span>
+<span id="cb6-5"></span>
+<span id="cb6-6"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(pred_cr, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> predicted, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> ac)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> size) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> monsters, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> cr), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"orangered4"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_viridis_d</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb6-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Armor Class"</span>, </span>
+<span id="cb6-12">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Challenge Rating"</span>)</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/blog_post_3/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This model looks pretty good! But there is still some variation left unexplained and a lot of variables left in the data set, so let’s see if we can do better!</p>
+</section>
+<section id="the-journey-continues" class="level2">
+<h2 class="anchored" data-anchor-id="the-journey-continues">The Journey Continues</h2>
+<p>To expand the model, I decided to add HP in the model and expand the visualization to include it. Each size category will now have three lines each, representing the Q1, median, and Q3 values for HP in the dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1">crhp_mod <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(cr <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> size <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> ac <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> size<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>ac <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> hp_number, monsters)</span>
+<span id="cb7-2"></span>
+<span id="cb7-3">crhp_mod <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">glance</span>()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.961         0.959  1.17      555. 2.10e-212    14  -512. 1057. 1117.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>The above table shows that this expanded version of the model has an adjusted r-squared of 0.959, meaning that 95.9% of the variation in challenge rating is explained by this model. Pretty great! So let’s visualize.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1">pred_crhp <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggpredict</span>(crhp_mod, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">terms =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ac"</span>,</span>
+<span id="cb9-2">                                       <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"hp_number [threenum]"</span>,</span>
+<span id="cb9-3">                                       <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"size"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">terms_to_colnames =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb9-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_tibble</span>()</span>
+<span id="cb9-6"></span>
+<span id="cb9-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(pred_crhp, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> predicted, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> ac)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">facet_wrap</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> size) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> monsters, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> cr), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> hp_number), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_viridis_d</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb9-12">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Armor Class"</span>, </span>
+<span id="cb9-13">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Challenge Rating"</span>,</span>
+<span id="cb9-14">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"HP"</span>)</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/blog_post_3/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looks great! Except… hold on… what’s happening with the Gargantuan monsters? The data seems to show a clear positive trend, so what’s with the negative line slope? Let’s look at the monsters closer.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1">monsters_garg <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> monsters <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> </span>
+<span id="cb10-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(size <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Gargantuan"</span>)</span>
+<span id="cb10-3"></span>
+<span id="cb10-4">monsters_garg <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(name, ac, hp_number) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slice</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">arrange</span>(hp_number) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> knitr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">kable</span>()</span></code></pre></div></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: right;">ac</th>
+<th style="text-align: right;">hp_number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Purple Worm</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">247</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Roc</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">248</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Brass Dragon</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">332</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient White Dragon</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">333</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dragon Turtle</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">356</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Black Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">367</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Copper Dragon</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">367</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Green Dragon</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">402</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Bronze Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">444</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Silver Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">468</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Blue Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">481</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kraken</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">481</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Red Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">507</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Gold Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">546</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tarrasque</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">697</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It looks like the problem lies with the HP. The Q1, median, and Q3 values represented by the lines on the model are not values of HP present within the Gargantuan monster category. This explains the problem with the lines. So let’s make another plot that represents the gargantuan monster category better.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1">crgarg_mod <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(cr <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> ac <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> hp_number, monsters_garg)</span>
+<span id="cb11-2">pred_garg <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggpredict</span>(crgarg_mod, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">terms =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ac"</span>,</span>
+<span id="cb11-3">                                       <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"hp_number [threenum]"</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">terms_to_colnames =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb11-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as_tibble</span>()</span>
+<span id="cb11-6"></span>
+<span id="cb11-7"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(pred_garg, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> predicted, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> ac)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> monsters_garg, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> cr), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_line</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> hp_number), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_viridis_d</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb11-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Armor Class"</span>,</span>
+<span id="cb11-12">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">y =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Challenge Rating"</span>,</span>
+<span id="cb11-13">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"HP"</span>)</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/blog_post_3/index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>My conclusions from this data exploration journey have more to do with data visualization techniques than dungeons and dragons. I have seen now possible ways that visualizations can be skewed in much the same way that general summary statistics can be. However, exploring this data has shown me the measures that most likely contribute to the challenge rating of dungeons and dragons monsters. Specifically, a high armor class and high HP contribute to a higher challenge rating.</p>
+</section>
+<section id="class-connections" class="level2">
+<h2 class="anchored" data-anchor-id="class-connections">Class Connections</h2>
+<p>For this blog post, I made use of visualization techniques to show the linear model I built from my data. By using ggpredict, I was able to draw lines showing the predicted values for challenge rating based on my chosen predictors. I made use of faceting and color differentiation to appropriately show the differing lines of best fit.</p>
 
 
+</section>
 
  ]]></description>
   <guid>https://your-website-url.example.com/posts/blog_post_3/</guid>
-  <pubDate>Wed, 11 Mar 2026 04:00:00 GMT</pubDate>
+  <pubDate>Fri, 13 Mar 2026 04:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/blog_post_3/dragons.avif" medium="image" type="image/avif"/>
 </item>
 <item>
   <title>Language in Africa</title>

@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Phoebe Jones">
-<meta name="dcterms.date" content="2026-03-11">
+<meta name="dcterms.date" content="2026-03-13">
 
-<title>VIDEO GAMES – Data Visualization Blog</title>
+<title>Dungeons! But mostly, Dragons! – Data Visualization Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -119,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">VIDEO GAMES</h1>
+      <h1 class="title">Dungeons! But mostly, Dragons!</h1>
                       </div>
   </div>
     
@@ -136,7 +171,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">March 11, 2026</p>
+        <p class="date">March 13, 2026</p>
       </div>
     </div>
     
@@ -155,8 +190,244 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>For this post, I worked with a data set of 330 monsters from Dungeons and Dragons, accessed from the Tidy Tuesday github repository. <a href="https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-05-27/readme.md" class="uri">https://github.com/rfordatascience/tidytuesday/blob/main/data/2025/2025-05-27/readme.md</a>. The data set contains 33 variables; the variables relevant to this post are <code>name</code>, <code>cr</code>, <code>size</code>, <code>ac</code>, and <code>hp_number</code>. <code>name</code> is the monster’s name (like Awakened Tree or Purple Worm), <code>cr</code> is the monster’s challenge rating (how difficult it is to defeat in battle), <code>size</code> is the monster’s size (in relative categories), <code>ac</code> is the monster’s armor class (how difficult it is to hit), and <code>hp_number</code> is the the amount of health that the monster has.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggeffects)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_linedraw</span>())</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>monsters <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">'https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-05-27/monsters.csv'</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>monsters <span class="ot">&lt;-</span> monsters <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">size =</span> <span class="fu">factor</span>(size))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>In exploring this data set, I was interested in looking at the relationships between monsters’ challenge ratings and their other stats.</p>
+</section>
+<section id="to-begin-my-adventure" class="level2">
+<h2 class="anchored" data-anchor-id="to-begin-my-adventure">To Begin My Adventure</h2>
+<p>I wanted to start my exploration simply, by looking at the distribution of challenge rating across the data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(monsters, <span class="fu">aes</span>(<span class="at">x =</span> cr)) <span class="sc">+</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_freqpoly</span>() <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Challenge Rating"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The above frequency plot shows what I would expect: that there are more monsters of lower challenge ratings and less of higher. This makes sense, as from an adventure standpoint, there would be more use for easier to fight monsters than for very difficult bosses.</p>
+<p>Challenge rating is provided to players within the game handbook, but it would be useful to have the ability to predict challenge rating given a monster’s stats, especially if one was interested in creating original monsters. This is where I took my exploration next, towards developing a model to predict challenge rating.</p>
+<p>I started with using a monster’s size and armor class (and an interaction term between the two) to predict challenge rating.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cr_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(cr <span class="sc">~</span> size <span class="sc">+</span> ac <span class="sc">+</span> size<span class="sc">:</span>ac, monsters)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>cr_mod <span class="sc">|&gt;</span> <span class="fu">glance</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.803         0.795  2.63      99.0 5.57e-103    13  -780. 1590. 1647.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>The above table shows this model has an adjusted r-squared of 0.795, meaning that the model explains 79.5% of the variation in challenge rating. That’s not bad! Let’s visualize.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pred_cr <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(cr_mod, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"ac"</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"size"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="at">terms_to_colnames =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_cr, <span class="fu">aes</span>(<span class="at">y =</span> predicted, <span class="at">x =</span> ac)) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> size) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> monsters, <span class="fu">aes</span>(<span class="at">y =</span> cr), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"orangered4"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>() <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Armor Class"</span>, </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Challenge Rating"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This model looks pretty good! But there is still some variation left unexplained and a lot of variables left in the data set, so let’s see if we can do better!</p>
+</section>
+<section id="the-journey-continues" class="level2">
+<h2 class="anchored" data-anchor-id="the-journey-continues">The Journey Continues</h2>
+<p>To expand the model, I decided to add HP in the model and expand the visualization to include it. Each size category will now have three lines each, representing the Q1, median, and Q3 values for HP in the dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>crhp_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(cr <span class="sc">~</span> size <span class="sc">+</span> ac <span class="sc">+</span> size<span class="sc">:</span>ac <span class="sc">+</span> hp_number, monsters)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>crhp_mod <span class="sc">|&gt;</span> <span class="fu">glance</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 12
+  r.squared adj.r.squared sigma statistic   p.value    df logLik   AIC   BIC
+      &lt;dbl&gt;         &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+1     0.961         0.959  1.17      555. 2.10e-212    14  -512. 1057. 1117.
+# ℹ 3 more variables: deviance &lt;dbl&gt;, df.residual &lt;int&gt;, nobs &lt;int&gt;</code></pre>
+</div>
+</div>
+<p>The above table shows that this expanded version of the model has an adjusted r-squared of 0.959, meaning that 95.9% of the variation in challenge rating is explained by this model. Pretty great! So let’s visualize.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pred_crhp <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(crhp_mod, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"ac"</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"hp_number [threenum]"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"size"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="at">terms_to_colnames =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_crhp, <span class="fu">aes</span>(<span class="at">y =</span> predicted, <span class="at">x =</span> ac)) <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> size) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> monsters, <span class="fu">aes</span>(<span class="at">y =</span> cr), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> hp_number), <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>() <span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Armor Class"</span>, </span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Challenge Rating"</span>,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"HP"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looks great! Except… hold on… what’s happening with the Gargantuan monsters? The data seems to show a clear positive trend, so what’s with the negative line slope? Let’s look at the monsters closer.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>monsters_garg <span class="ot">&lt;-</span> monsters <span class="sc">|&gt;</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(size <span class="sc">==</span> <span class="st">"Gargantuan"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>monsters_garg <span class="sc">|&gt;</span> <span class="fu">select</span>(name, ac, hp_number) <span class="sc">|&gt;</span> <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(hp_number) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">name</th>
+<th style="text-align: right;">ac</th>
+<th style="text-align: right;">hp_number</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Purple Worm</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">247</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Roc</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">248</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Brass Dragon</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">332</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient White Dragon</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">333</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dragon Turtle</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">356</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Black Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">367</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Copper Dragon</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">367</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Green Dragon</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">402</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Bronze Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">444</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Silver Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">468</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Blue Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">481</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Kraken</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">481</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ancient Red Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">507</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ancient Gold Dragon</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">546</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tarrasque</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">697</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>It looks like the problem lies with the HP. The Q1, median, and Q3 values represented by the lines on the model are not values of HP present within the Gargantuan monster category. This explains the problem with the lines. So let’s make another plot that represents the gargantuan monster category better.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>crgarg_mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(cr <span class="sc">~</span> ac <span class="sc">+</span> hp_number, monsters_garg)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>pred_garg <span class="ot">&lt;-</span> <span class="fu">ggpredict</span>(crgarg_mod, <span class="at">terms =</span> <span class="fu">c</span>(<span class="st">"ac"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                                       <span class="st">"hp_number [threenum]"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>(<span class="at">terms_to_colnames =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_garg, <span class="fu">aes</span>(<span class="at">y =</span> predicted, <span class="at">x =</span> ac)) <span class="sc">+</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> monsters_garg, <span class="fu">aes</span>(<span class="at">y =</span> cr), <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> hp_number), <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>() <span class="sc">+</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Armor Class"</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Challenge Rating"</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"HP"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>My conclusions from this data exploration journey have more to do with data visualization techniques than dungeons and dragons. I have seen now possible ways that visualizations can be skewed in much the same way that general summary statistics can be. However, exploring this data has shown me the measures that most likely contribute to the challenge rating of dungeons and dragons monsters. Specifically, a high armor class and high HP contribute to a higher challenge rating.</p>
+</section>
+<section id="class-connections" class="level2">
+<h2 class="anchored" data-anchor-id="class-connections">Class Connections</h2>
+<p>For this blog post, I made use of visualization techniques to show the linear model I built from my data. By using ggpredict, I was able to draw lines showing the predicted values for challenge rating based on my chosen predictors. I made use of faceting and color differentiation to appropriately show the differing lines of best fit.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
