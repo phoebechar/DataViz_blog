@@ -10,7 +10,286 @@
 <atom:link href="https://your-website-url.example.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Blog for DS334 - Spring 2026</description>
 <generator>quarto-1.8.25</generator>
-<lastBuildDate>Fri, 13 Mar 2026 04:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sun, 03 May 2026 04:00:00 GMT</lastBuildDate>
+<item>
+  <title>Classic for a Reason: The 90-Miler</title>
+  <dc:creator>Phoebe Jones</dc:creator>
+  <link>https://your-website-url.example.com/posts/final_blog_post/</link>
+  <description><![CDATA[ 
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>For this post, I worked with data related to the Adirondack Canoe Classic (90-Miler) race from 2008-2025. The data is separated between days of the three-day event; days 1 and 2 have 3722 results each and day 3 has 3293; for this post, I will be working with day 1. Race-specific finisher data is pulled from <a href="https://paddlestats.net/racehistory/ADK90">PaddleStats</a>, water level data comes from the <a href="https://www.usgs.gov/">USGS</a>, and weather data was gathered using <a href="https://open-meteo.com/">Open-Meteo</a>. The important variables (other than <code>year</code> which is used for organization) are <code>temp</code> (in Fahrenheit), <code>water</code> (water level in ft), <code>n_paddler</code> (# of paddlers), <code>boatType</code> (Canoe, Kayak, Guideboat, SUP, Voyageur), and <code>value</code> (time in hrs).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(broom)</span>
+<span id="cb1-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_set</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_linedraw</span>())</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">day1 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">read.csv</span>(here<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">here</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day1_full.csv"</span>))</span></code></pre></div></div>
+</div>
+<p>In exploring this data set, I was interested in looking at any variables that could explain differences in completion times using these variables to build a model to predict future completion times.</p>
+</section>
+<section id="exploring-variables" class="level2">
+<h2 class="anchored" data-anchor-id="exploring-variables">Exploring Variables</h2>
+<p>I began by looking closely at some variables to ensure they had relationships with completion times. Below is an exploratory plot showing the time distributions (as densities, not exact numbers) on day 1 of different boat types.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(day1, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> value, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> boatType)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-2">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.9</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>()) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_color_viridis_d</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">option =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"plasma"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb2-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time (hr)"</span>,</span>
+<span id="cb2-6">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Boat Type"</span>)</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/final_blog_post/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This plot supports my assumption that boat type will most likely be a helpful predictor for completion times. The boat types all have distinct peaks.</p>
+</section>
+<section id="building-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="building-the-model">Building The Model</h2>
+<p>The model I decided on uses <code>temp</code>, <code>level</code>, <code>boatType</code>, and <code>n_paddler</code> to predict <code>value</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">pred_mod <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">lm</span>(value <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> boatType <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> temp <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> water <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> n_paddler, day1)</span>
+<span id="cb3-2">pred_mod <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">summary</span>()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = value ~ boatType + temp + water + n_paddler, data = day1)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.86316 -0.72394 -0.06651  0.70135  3.13518 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        1.788e+03  4.057e+02   4.408 1.07e-05 ***
+boatTypeGuideboat  6.854e-01  7.472e-02   9.173  &lt; 2e-16 ***
+boatTypeKayak     -2.069e-01  6.255e-02  -3.308 0.000948 ***
+boatTypeSUP        1.135e+00  2.066e-01   5.494 4.20e-08 ***
+boatTypeVoyageur  -1.395e+00  1.214e-01 -11.486  &lt; 2e-16 ***
+temp              -7.116e-03  2.534e-03  -2.809 0.005000 ** 
+water             -1.043e+00  2.377e-01  -4.390 1.16e-05 ***
+n_paddler          1.237e-01  9.441e-03  13.107  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 0.9965 on 3714 degrees of freedom
+Multiple R-squared:  0.1024,    Adjusted R-squared:  0.1007 
+F-statistic: 60.55 on 7 and 3714 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>This predictions are much more useful in context. The plot below shows, on the density plot of day 1 times, the model’s prediction for a Canoe with 2 people on Day 1 with a temperature of 63 and a water level of 1706.8 ft.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">data <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">boatType =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Canoe"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">temp =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">63</span>, </span>
+<span id="cb5-2">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">water =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1706.8</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">n_paddler =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb5-3"></span>
+<span id="cb5-4"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> day1, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> value)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-5">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_density</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-6">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_vline</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xintercept =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">predict</span>(pred_mod, data), </span>
+<span id="cb5-7">                 <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">color =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"magenta"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-8">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_linedraw</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">base_size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-9">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>(), </span>
+<span id="cb5-10">            <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_blank</span>()) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb5-11">      <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Time for Completion (Hours)"</span>,</span>
+<span id="cb5-12">           <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title =</span> (<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Distribution of Times for Day 1"</span>))</span></code></pre></div></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://your-website-url.example.com/posts/final_blog_post/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that this prediction—of about 7 hours—is just above the mode time for day 1. This makes sense, as canoes with 2 paddlers are extremely common boats and 63 degrees is an average temperature for day 1, but 1706.8 is on the higher end of water levels. A higher water level usually means faster times. This is reflected in the coefficient estimate for water level in the model summary.</p>
+</section>
+<section id="the-app" class="level2">
+<h2 class="anchored" data-anchor-id="the-app">The App</h2>
+<p>Using this model, I built a Shiny App to make the model accessible to others. My Shiny App allows users to choose a day, a temperature, a water level, a craft type, and a number of paddlers (restricted to options with substantial data). As the water level measurements are from different locales with different scales, the slider for water level changes with the user’s input for the day. Similarly, The user’s input for craft type impacts the options available for number of paddlers.</p>
+<p>Below is a screenshot from the Shiny App. The user has chosen a 2-person canoe on Day 2, with a temperature of 63 degrees and water level of 7.25 ft.</p>
+<p><img src="https://your-website-url.example.com/posts/final_blog_post/examplePlot.png" class="img-fluid"></p>
+</section>
+<section id="class-connections" class="level2">
+<h2 class="anchored" data-anchor-id="class-connections">Class Connections</h2>
+<p>For this blog post, I primarily made use of the Shiny section of the course. I worked with reactivity and dynamic UI to build the app I wanted. I revisited the Mastering Shiny book and consulted different chapters for topics such as the tabsetPanel(). I also made use of general visualization suggestions like removing unnecessary or confusing text and ensuring readibility through text size.</p>
+
+
+</section>
+
+ ]]></description>
+  <guid>https://your-website-url.example.com/posts/final_blog_post/</guid>
+  <pubDate>Sun, 03 May 2026 04:00:00 GMT</pubDate>
+  <media:content url="https://your-website-url.example.com/posts/final_blog_post" medium="image"/>
+</item>
 <item>
   <title>Dungeons! But mostly, Dragons!</title>
   <dc:creator>Phoebe Jones</dc:creator>
