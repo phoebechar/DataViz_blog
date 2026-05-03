@@ -280,7 +280,7 @@ font-style: inherit;">"Distribution of Times for Day 1"</span>))</span></code></
 </section>
 <section id="class-connections" class="level2">
 <h2 class="anchored" data-anchor-id="class-connections">Class Connections</h2>
-<p>For this blog post, I primarily made use of the Shiny section of the course. I worked with reactivity and dynamic UI to build the app I wanted. I revisited the Mastering Shiny book and consulted different chapters for topics such as the tabsetPanel(). I also made use of general visualization suggestions like removing unnecessary or confusing text and ensuring readibility through text size.</p>
+<p>For this blog post, I primarily made use of the Shiny section of the course. I worked with reactivity and dynamic UI to build the app I wanted. I revisited the Mastering Shiny book and consulted different chapters for topics such as the tabsetPanel(). I also made use of general visualization suggestions like removing unnecessary or confusing text and ensuring readability through text size.</p>
 
 
 </section>
@@ -288,7 +288,7 @@ font-style: inherit;">"Distribution of Times for Day 1"</span>))</span></code></
  ]]></description>
   <guid>https://your-website-url.example.com/posts/final_blog_post/</guid>
   <pubDate>Sun, 03 May 2026 04:00:00 GMT</pubDate>
-  <media:content url="https://your-website-url.example.com/posts/final_blog_post" medium="image"/>
+  <media:content url="https://your-website-url.example.com/posts/final_blog_post/adk90.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Dungeons! But mostly, Dragons!</title>
